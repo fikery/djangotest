@@ -9,12 +9,12 @@
 这样才可以在外网访问ip:8000
 3.创建app,python manage.py startapp mainsite
 4.创建git文库
->git init
->git add .
->git commit -m 'first commit'
->git remote add origin https://github.com/namex/x.git （如果出现已存在错误,先执行git remote rm origin）
->git pull(提交之前先进行更新，如果发生错误，执行git pull origin master --allow-unrelated-histories)
->git push -u origin master（如果出现error，注意是否没有pull导致的）
+>git init,
+>git add .,
+>git commit -m 'first commit',
+>git remote add origin https://github.com/namex/x.git （如果出现已存在错误,先执行git remote rm origin）,
+>git pull(提交之前先进行更新，如果发生错误，执行git pull origin master --allow-unrelated-histories),
+>git push -u origin master（如果出现error，注意是否没有pull导致的）,
 5.在setting.py里更改时区信息，增加app信息。即install_apps中增加'mainsite',设置language_code='zh-Hans',time_zone='Asia/Shanghai'
 6.创建数据库python manage.py migrate
 以上即为搭建了django项目框架。
