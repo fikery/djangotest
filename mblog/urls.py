@@ -31,6 +31,6 @@ urlpatterns = [
 
     url(r'^video/(\d+)/$',views.video,name='tv-url'),#视频页面
 
-    url(r'',views.index), #如果输入错误地址，返回主页
+    # url(r'',views.index), #如果输入错误地址，返回主页
 
 ]

@@ -42,7 +42,7 @@ def post(request,year,month,day,post_num):
     return HttpResponse(html)
 
 def video(request,tvno='0'):
-    tv_list=[{'name':'CCTV 中文国际','tvcode':'vCDDYb_M2B4'},{'name':'台湾中天新闻','tvcode':'wUPPkSANpyo'},]
+    tv_list=[{'name':'CCTV 中文国际频道','tvcode':'vCDDYb_M2B4'},{'name':'台湾中天新闻频道','tvcode':'wUPPkSANpyo'},]
     template=get_template('video.html')
     now=datetime.datetime.now()
     # tvno=tvno
