@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse,Http404
 from .models import Post,Product
 from django.template.loader import get_template
-import random
+import random,datetime
 
 
 # Create your views here.
@@ -35,4 +35,17 @@ def disp_detail(request,sku):
     template=get_template('disp.html')
     html=template.render({'product':p})
 
+    return HttpResponse(html)
+
+def post(request,year,month,day,post_num):
+    html='<h2>{}/{}/{}:当前查看编号:{}'.format(year,month,day,post_num)
+    return HttpResponse(html)
+
+def video(request,tvno='0'):
+    tv_list=[{'name':'CCTV 中文国际','tvcode':'vCDDYb_M2B4'},{'name':'台湾中天新闻','tvcode':'wUPPkSANpyo'},]
+    template=get_template('video.html')
+    now=datetime.datetime.now()
+    # tvno=tvno
+    tv=tv_list[int(tvno)]
+    html=template.render(locals())
     return HttpResponse(html)
