@@ -28,8 +28,10 @@ urlpatterns = [
     # url(r'^list/$',views.disp_detail,{'test':'yes'}),#手动传参
     url(r'^post/(\d{4})/(\d{1,2})/(\d{1,2})/(\d{1,3})',views.post), #传递多个参数
     url('^about/$',views.about),
-
-    url(r'^video/(\d+)/$',views.video,name='tv-url'),#视频页面
+    url(r'^video/$',views.video),#tv主页面
+    url(r'^video/(\d+)/$',views.video,name='tv-url'),#具体tv页面
+    url(r'^carlist/$',views.carlist),
+    url(r'^carlist/(\d+)/$',views.carlist,name='carlist-url'),
 
     # url(r'',views.index), #如果输入错误地址，返回主页
 

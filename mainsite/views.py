@@ -45,7 +45,22 @@ def video(request,tvno='0'):
     tv_list=[{'name':'CCTV 中文国际频道','tvcode':'vCDDYb_M2B4'},{'name':'台湾中天新闻频道','tvcode':'wUPPkSANpyo'},]
     template=get_template('video.html')
     now=datetime.datetime.now()
-    # tvno=tvno
+    hour=now.timetuple().tm_hour
     tv=tv_list[int(tvno)]
+    html=template.render(locals())
+    return HttpResponse(html)
+
+def carlist(request,maker='0'):
+    car_maker=['宝马','福特','本田','马自达','尼桑','丰田']
+    car_list=[
+        [],['fiesta','福克斯','modeo','ecosport','kuga','mustang'],['fit','odyssey','cr-v','city','nsx'],
+        ['马自达3','马自达5','马自达6','cx-3','cx-5','mx-5'],
+        ['march','tida','march','livina','sentra','teana','x-trail','juke','murano'],
+        ['凯美瑞','altis','yaris','86','prius','vios','rav4','wish']
+    ]
+    maker=int(maker)
+    maker_name=car_maker[maker]
+    cars=car_list[maker]
+    template=get_template('carlist.html')
     html=template.render(locals())
     return HttpResponse(html)
