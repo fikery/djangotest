@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+{% extends 'pbase.html' %}
+{% block title %}
+{{ product.nickname | default:'找不到指定手机' }}
+{% endblock %}
+
+{% block content %}
+    <div class="container" align="center">
+        {% if product %}
+        <table>
+            <tr><td align="center"><h3>{{ product.nickname}}</h3></td> </tr>
+            <tr><td align="center">{{ product.description}}</td> </tr>
+            <tr><td align="center">出厂时间: {{ product.year}}</td> </tr>
+            <tr><td align="center">手机售价: {{ product.price}}</td> </tr>
+            {% for image in images %}
+                {% if forloop.first %}
+                    <tr><td align="center">
+                {% endif %}
+                    <img src="{{ image.url }}" width="350"><br>
+                {% if forloop.last %}
+                    </td> </tr>
+                {% endif %}
+            {% empty %}
+            <tr><td align="center">暂无图像</td> </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <h2>找不到指定d手机</h2>
+        {% endif %}
+    </div>
+{% endblock %}

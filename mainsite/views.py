@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse,Http404
-from .models import Post,Product
+from .models import Post,Product,PProduct,PPhote
 from django.template.loader import get_template
 import random,datetime
+from mainsite import models,forms
+from django.template import RequestContext
 
 
 # Create your views here.
@@ -63,4 +65,67 @@ def carlist(request,maker='0'):
     cars=car_list[maker]
     template=get_template('carlist.html')
     html=template.render(locals())
+    return HttpResponse(html)
+
+def pindex(request):
+    products=PProduct.objects.all()
+    template=get_template('pindex.html')
+    html=template.render(locals())
+    return HttpResponse(html)
+
+def phonedetail(request,id):
+    try:
+        product=PProduct.objects.get(id=id)
+        images=PPhote.objects.filter(product=product)
+    except:
+        pass
+    template=get_template('phonedetail.html')
+    html=template.render(locals())
+    return HttpResponse(html)
+
+def mood(request):
+    template=get_template('mood.html')
+    posts=models.MPost.objects.filter(enabled=True).order_by('-pub_time')[:30]
+    moods=models.Mood.objects.all()
+    try:
+        user_id=request.get['user_id']
+        user_pass=request.get['user_pass']
+        user_post=request.get['user_post']
+        user_mood=request.get['mood']
+    except:
+        user_id=None
+        message='请输入数据'
+    if user_id:
+        mood=models.Mood.objects.get(status=user_mood)
+        post=models.MPost.objects.create(mood=mood, nickname=user_id,del_pass=user_pass,message=user_post)
+        post.save()
+        message='成功存储，将会在审核后显示'
+
+    html=template.render(locals())
+    return HttpResponse(html)
+
+def flisting(request):
+    template=get_template('flisting.html')
+    posts=models.MPost.objects.filter(enabled=True).order_by('-pub_time')[:50]
+    moods=models.Mood.objects.all()
+
+    html=template.render(locals())
+
+    return HttpResponse(html)
+
+def fposting(request):
+    template=get_template('fposting.html')
+    moods=models.Mood.objects.all()
+    message='发布信息请完整填写内容'
+
+    # request_context=RequestContext(request)
+    # request_context.push(locals())
+    html=template.render(context=locals(),request=request)
+
+    return HttpResponse(html)
+
+def contact(request):
+    form=forms.ContactForm()
+    template=get_template('contact.html')
+    html=template.render(context=locals(),request=request)
     return HttpResponse(html)

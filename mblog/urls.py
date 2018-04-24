@@ -32,6 +32,11 @@ urlpatterns = [
     url(r'^video/(\d+)/$',views.video,name='tv-url'),#具体tv页面
     url(r'^carlist/$',views.carlist),
     url(r'^carlist/(\d+)/$',views.carlist,name='carlist-url'),
+    url(r'^phone/$',views.pindex),
+    url(r'^phonedetail/(\d+)$',views.phonedetail,name='phonedetail'),
+    url(r'^mood/$',views.mood),
+    url(r'^flist/$',views.flisting),
+    url(r'^fpost/$',views.fposting),
 
     # url(r'',views.index), #如果输入错误地址，返回主页
 

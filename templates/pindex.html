@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+{% extends 'pbase.html' %}
+{% block title %}斌哥还卖手机{% endblock %}
+{% block content %}
+<div class="container" align="center">
+
+    <form name="myform" action="/" method="get">
+        <label for="user_id">ID:</label>
+        <input id="user_id" type="text" name="user_id">
+        <label for="user_pass">密码:</label>
+        <input id="user_pass" type="password" name="user_pass">
+        <input type="submit" value="登录">
+        <input type="reset" value="清除">
+    </form>
+
+    {% for p in products %}
+    {% if forloop.first %}
+    <table>
+        <tr bgcolor="#cccccc">
+            <td width="150">库存手机</td>
+            <td width="150">品牌/型号</td>
+            <td width="150">出厂年份</td>
+            <td>价格</td>
+        </tr>
+        {% endif %}
+        <tr bgcolor="{% cycle '#ffccff' '#ccffcc' %}" >
+            <td><a href="{% url 'phonedetail' p.id %}">{{ p.nickname }}</a> </td>
+            <td>{{ p.pmodel.maker.name }}/{{ p.pmodel }}</td>
+            <td>{{p.year}}</td>
+            <td align="right">{{p.price }}</td>
+        </tr>
+        {% if forloop.last %}
+    </table>
+    {% endif %}
+    {% empty %}
+    <h3>不好意思，没找到</h3>
+    {% endfor %}
+
+</div>
+{% endblock %}

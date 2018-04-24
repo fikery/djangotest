@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+{% if message %}
+<div class="alert alert-warning">{{message}}</div>
+{% endif %}
+
+<form name="myform" action="/" method="get">
+    现在的心情:<br/>
+    {% for m in moods %}
+    <input type="radio" name="mood" value="{{ m.status }}">{{ m.status }}
+    {% endfor %}
+    <br/>
+    心情留言板:<br/>
+    <textarea name="user_post" rows="3" cols="70"></textarea><br/>
+    <label for="user_id">昵称:</label>
+    <input id="user_id" type="text" name="user_id">
+    <label for="user_pass">发布密码:</label>
+    <input id="user_pass" type="password" name="user_pass"><br/>
+    <input type="submit" value="发布">
+    <input type="reset" value="重置">
+</form>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading" align="center">
+                <h3>~~(宝ᴗ宝)心里苦，只在这里说~~</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for p in posts %}
+{% cycle '<div class="row">
+    <div class="col-md-4">message 1</div>
+    <div class="col-md-4">message 2</div>
+    <div class="col-md-4">message 3</div> </div>%}
+    <div class="panel panel-primary">
+        <div class="panel-heading">【{{p.nickname}}】觉得{{p.mood}}</div>
+        <div class="panel-body">{{p.message | linebreaks}}</div>
+        <div class="panel-footer" align="right"><i><small>{{p.pub_time}}</small></i></div>
+    </div>
+    {% cycle "" "" "</div>" %}
+    {% endfor %}
