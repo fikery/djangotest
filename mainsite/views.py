@@ -1,8 +1,14 @@
-from django.shortcuts import render
+from django.contrib import messages, auth
+from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.core.mail import EmailMessage
+
+from django.shortcuts import render, redirect
 from django.http import HttpResponse,Http404
 from .models import Post,Product,PProduct,PPhote
 from django.template.loader import get_template
-import random,datetime
+import random,datetime,time
 from mainsite import models,forms
 from django.template import RequestContext
 
@@ -125,7 +131,160 @@ def fposting(request):
     return HttpResponse(html)
 
 def contact(request):
-    form=forms.ContactForm()
+    if request.method=='POST':
+        form=forms.ContactForm(request.POST)
+        if form.is_valid():
+            message='感谢来信'
+            user_name=form.cleaned_data['user_name']
+            user_city=form.cleaned_data['user_city']
+            user_school=form.cleaned_data['user_school']
+            user_email=form.cleaned_data['user_email']
+            user_message=form.cleaned_data['user_message']
+
+            mail_body='''
+            姓名:{}
+            城市:{}
+            学生:{}
+            建议:{}
+            '''.format(user_name,user_city,user_school,user_message)
+            email=EmailMessage('来自【不吐不快】网站的网友意见',mail_body,user_email,['liuyongbin0011@gmail.com'])
+            email.send()
+        else:
+            message='请检查输入是否正确'
+    else:
+        form=forms.ContactForm()
     template=get_template('contact.html')
+    html=template.render(context=locals(),request=request)
+    return HttpResponse(html)
+
+#session
+def login(request):
+    if request.method=='POST':
+        login_form=forms.LoginForm(request.POST)
+        if login_form.is_valid():
+            login_name=request.POST['username'].strip()
+            login_password=request.POST['password']
+            # try:
+                # user=models.User.objects.get(name=login_name)#使用自定义的User类
+                # if user.password==login_password:
+                #     request.session['username']=user.name
+                #     request.session['useremail']=user.email
+                #     messages.add_message(request,messages.SUCCESS,'成功登录')
+                #     return redirect('/user/')
+                # else:
+                #     messages.add_message(request,messages.WARNING,'密码错误，请重试')
+            # except:
+            #     messages.add_message(request,messages.WARNING,'用户名错误，请重试')
+            user = authenticate(username=login_name, password=login_password)  # 系统User,验证登录
+            if user is not None:
+                if user.is_active:
+                    auth.login(request, user)
+                    messages.add_message(request, messages.SUCCESS, '成功登录')
+                    return redirect('/user/')
+                else:
+                    messages.add_message(request, messages.WARNING, '账号未启用')
+            else:
+                messages.add_message(request, messages.WARNING, '登录失败')
+        else:
+            messages.add_message(request,messages.INFO,'请检查输入内容')
+    else:
+        login_form=forms.LoginForm()
+
+    template=get_template('userlogin.html')
+    html=template.render(context=locals(),request=request)
+    return HttpResponse(html)
+
+def login_index(request,pid=None,del_pass=None):
+    # 采用自定义user类
+    # if 'username' in request.session:
+    #     username=request.session['username']
+    #     useremail=request.session['useremail']
+    #采用系统user类
+    if request.user.is_authenticated:
+        username=request.user.username
+        useremail=request.user.email
+        try:
+            user=User.objects.get(username=username)
+            diaries=models.Diary.objects.filter(user=user).order_by('-ddate')
+        except:
+            pass
+    messages.get_messages(request)
+    template=get_template('userindex.html')
+    html=template.render(context=locals(),request=request)
+    return HttpResponse(html)
+
+# @login_required(login_url='/login/')
+# def userinfo(request):
+#     # if 'username' in request.session:
+#     #     username=request.session['username']
+#     # else:
+#     #     return redirect('/login/')
+#     # try:
+#     #     userinfo=models.User.objects.get(name=username)
+#     # except:
+#     #     pass
+#     if request.user.is_authenticated:
+#         username=request.user.username
+#         try:
+#             user=User.objects.get(username=username)
+#             userinfo=models.Profile.objects.get(user=user)
+#         except:
+#             pass
+#     template=get_template('userinfo.html')
+#     html=template.render(context=locals(),request=request)
+#     return HttpResponse(html)
+
+def logout(request):
+    auth.logout(request)
+    messages.add_message(request,messages.INFO,'注销成功')
+    return redirect('/login/')
+
+@login_required(login_url='/login/')
+def userPosting(request):
+    if request.user.is_authenticated:
+        username=request.user.username
+        useremail=request.user.email
+    messages.get_messages(request)
+
+    if request.method=='POST':
+        user=User.objects.get(username=username)
+        diary=models.Diary(user=user)
+        post_form=forms.DiaryForm(request.POST,instance=diary)
+        if post_form.is_valid():
+            messages.add_message(request,messages.INFO,'保存成功')
+            post_form.save()
+            return redirect('/user/')
+        else:
+            messages.add_message(request,messages.INFO,'请检查字段是否填写完整')
+    else:
+        post_form=forms.DiaryForm()
+        messages.add_message(request,messages.INFO,'如果要发布日记，请填写完整字段')
+
+    template=get_template('userposting.html')
+    html=template.render(context=locals(),request=request)
+    return HttpResponse(html)
+
+#注册
+@login_required(login_url='/login/')
+def userinfo(request):
+    if request.user.is_authenticated:
+        username=request.user.username
+    user=User.objects.get(username=username)
+    try:
+        profile=models.Profile.objects.get(user=user)
+    except:
+        profile=models.Profile(user=user)
+    if request.method=='POST':
+        profile_form=forms.ProfileForm(request.POST,instance=profile)
+        if profile_form.is_valid():
+            messages.add_message(request, messages.INFO, '保存成功')
+            profile_form.save()
+            return redirect('/userinfo')
+        else:
+            messages.add_message(request, messages.INFO, '请检查字段是否填写完整')
+    else:
+        profile_form=forms.ProfileForm()
+
+    template=get_template('userinfo.html')
     html=template.render(context=locals(),request=request)
     return HttpResponse(html)

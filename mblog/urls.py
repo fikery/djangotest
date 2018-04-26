@@ -37,6 +37,16 @@ urlpatterns = [
     url(r'^mood/$',views.mood),
     url(r'^flist/$',views.flisting),
     url(r'^fpost/$',views.fposting),
+    #session
+    url(r'^login/$',views.login),
+    url(r'^user/$',views.login_index),
+    url(r'^userinfo/$',views.userinfo),
+    url(r'^logout/$',views.logout),
+    url(r'^userpost/$',views.userPosting),
+    url(r'^contact/$',views.contact),#测试邮件发送
+    #注册
+    url(r'^accounts/',include('registration.backends.hmac.urls')),
+
 
     # url(r'',views.index), #如果输入错误地址，返回主页
 

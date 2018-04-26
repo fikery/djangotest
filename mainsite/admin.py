@@ -21,3 +21,10 @@ class MPostAdmin(admin.ModelAdmin):
     ordering = ('-pub_time',)
 admin.site.register(models.Mood)
 admin.site.register(models.MPost,MPostAdmin)
+
+#session
+admin.site.register(models.MyUser)
+
+admin.site.register(models.Profile)
+
+admin.site.register(models.Diary)

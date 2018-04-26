@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+{% extends 'userbase.html '%}
+{% block title %}分享日记{% endblock %}
+{% block content %}
+<div class="container">
+    {% for message in messages %}
+    <div class="alert alert-{{message.tags}}">{{ message }}</div>
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading" align="center">
+                    <h3>注册成功</h3>
+                    <p>请及时到注册邮箱中激活账号</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+{% extends 'userbase.html '%}
+{% block title %}我有话要说{% endblock %}
+{% block content %}
+<div class="container">
+    {% for message in messages %}
+    <div class="alert alert-{{message.tags}}">{{ message }}</div>
+    {% endfor %}
+
+    <form name="myform" action="." method="post">
+        {% csrf_token %}
+        <table>
+            {{ post_form.as_table }}
+        </table>
+        <br/>
+        <input type="submit" value="发布">
+        <input type="reset" value="重置">
+    </form>
+</div>
+{% endblock %}

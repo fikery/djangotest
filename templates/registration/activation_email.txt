@@ -1,0 +1,5 @@
+感谢注册
+用户：{{ user }}
+注册网站: {{ site }}
+激活链接：http://{{ site }}/accounts/activate/{{ activation_key }}
+过期时间：{{ expiration_days }}
